@@ -1,84 +1,103 @@
 <!DOCTYPE html>
 <html>
-    <head>
-    <style>
-        #gameContainer {
-            width: 800px;
-            height: 600px;
-            border: 1px solid black;
-            position: relative;
-            overflow: hidden;
-        }
+	<head>
+		<meta charset="UTF-8">
+		<style>
+			#gameContainer {
+				width: 800px;
+				height: 600px;
+				border: 1px solid black;
+				position: relative;
+				overflow: hidden;
+			}
 
-        .apple {
-            width: 100px;
-            height: 100px;
-            position: absolute;
-            background-image: url('manzana.png'); /* Asegúrate de tener una imagen de manzana llamada 'apple.png' en la misma carpeta que este archivo */
-        }
+			.apple {
+				width: 100px;
+				height: 100px;
+				position: absolute;
+				background-image: url('manzana.png'); /* Asegúrate de tener una imagen de manzana llamada 'manzana.png' en la misma carpeta que este archivo */
+			}
 
-        #bowl {
-            width: 300px;
-            height: 200px;
-            position: absolute;
-            bottom: 0;
-            background-image: url('bowl.png'); /* Asegúrate de tener una imagen de tazón llamada 'bowl.png' en la misma carpeta que este archivo */
-        }
-    </style>
-    </head>
-    <body>
-    <div id="gameContainer"></div>
-    <script>
-        let gameContainer = document.getElementById('gameContainer');
-        let bowl = document.createElement('div');
-        bowl.id = 'bowl';
-        gameContainer.appendChild(bowl);
-        bowl.style.left = '325px';
-        document.addEventListener('keydown', moveBowl);
+			#bowl {
+				width: 300px;
+				height: 200px;
+				position: absolute;
+				bottom: 0;
+				background-image: url('bowl.png'); /* Asegúrate de tener una imagen de tazón llamada 'bowl.png' en la misma carpeta que este archivo */
+			}
 
-        function moveBowl(e) {
-            let bowlLeft = parseInt(window.getComputedStyle(bowl).getPropertyValue('left'));
-            if (e.key == 'ArrowLeft' && bowlLeft > 0) {
-                bowl.style.left = bowlLeft - 50 + 'px';
-            }
-            if (e.key == 'ArrowRight' && bowlLeft < 650) {
-                bowl.style.left = bowlLeft + 50 + 'px';
-            }
-        }
+			#score {
+				position: absolute;
+				top: 10px;
+				left: 10px;
+				font-size: 24px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="gameContainer">
+			<div id="score">Puntuación: <span id="scoreValue">0</span></div>
+		</div>
+		<script>
+			let gameContainer = document.getElementById('gameContainer');
+			let bowl = document.createElement('div');
+			bowl.id = 'bowl';
+			gameContainer.appendChild(bowl);
+			bowl.style.left = '325px';
+			document.addEventListener('keydown', moveBowl);
 
-        function createApple() {
-            let apple = document.createElement('div');
-            apple.classList.add('apple');
-            apple.style.left = Math.floor(Math.random() * 750) + 'px';
-            apple.style.top = '-50px';
-            gameContainer.appendChild(apple);
-        }
+			let score = 0;
+			let scoreElement = document.getElementById('scoreValue');
 
-        setInterval(createApple, 2000);
+			function moveBowl(e) {
+				let bowlLeft = parseInt(window.getComputedStyle(bowl).getPropertyValue('left'));
+				if (e.key == 'ArrowLeft' && bowlLeft > 0) {
+					bowl.style.left = bowlLeft - 50 + 'px';
+				}
+				if (e.key == 'ArrowRight' && bowlLeft < 650) {
+					bowl.style.left = bowlLeft + 50 + 'px';
+				}
+			}
 
-        function moveApples() {
-            let apples = document.getElementsByClassName('apple');
-            for (let apple of apples) {
-                let appleTop = parseInt(window.getComputedStyle(apple).getPropertyValue('top'));
-                if (appleTop >= 550) {
-                    gameContainer.removeChild(apple);
-                } else {
-                    apple.style.top = appleTop + 5 + 'px';
-                    checkCollision(apple);
-                }
-            }
-        }
+			function createApple() {
+				let apple = document.createElement('div');
+				apple.classList.add('apple');
+				apple.style.left = Math.floor(Math.random() * 750) + 'px';
+				apple.style.top = '-50px';
+				gameContainer.appendChild(apple);
+			}
 
-        function checkCollision(apple) {
-            let bowlLeft = parseInt(window.getComputedStyle(bowl).getPropertyValue('left'));
-            let appleLeft = parseInt(window.getComputedStyle(apple).getPropertyValue('left'));
-            let appleTop = parseInt(window.getComputedStyle(apple).getPropertyValue('top'));
-            if (appleLeft > bowlLeft && appleLeft < bowlLeft + 150 && appleTop >= 500) {
-                gameContainer.removeChild(apple);
-            }
-        }
+			setInterval(createApple, 1000);
 
-        setInterval(moveApples, 30);
-    </script>
-    </body>
+			function moveApples() {
+				let apples = document.getElementsByClassName('apple');
+				for (let apple of apples) {
+					let appleTop = parseInt(window.getComputedStyle(apple).getPropertyValue('top'));
+					if (appleTop >= 550) {
+						gameContainer.removeChild(apple);
+					} else {
+						apple.style.top = appleTop + 15 + 'px';
+						checkCollision(apple);
+					}
+				}
+			}
+
+			function checkCollision(apple) {
+				let bowlLeft = parseInt(window.getComputedStyle(bowl).getPropertyValue('left'));
+				let appleLeft = parseInt(window.getComputedStyle(apple).getPropertyValue('left'));
+				let appleTop = parseInt(window.getComputedStyle(apple).getPropertyValue('top'));
+				if (appleLeft > bowlLeft && appleLeft < bowlLeft + 150 && appleTop >= 500) {
+					gameContainer.removeChild(apple);
+					increaseScore();
+				}
+			}
+
+			function increaseScore() {
+				score++;
+				scoreElement.textContent = score;
+			}
+
+			setInterval(moveApples, 30);
+		</script>
+	</body>
 </html>
