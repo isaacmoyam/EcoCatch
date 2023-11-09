@@ -41,30 +41,63 @@
 		<script>
 			let gameContainer = document.getElementById('gameContainer');
 			let bowl = document.createElement('div');
+			
 			bowl.id = 'bowl';
 			gameContainer.appendChild(bowl);
 			bowl.style.left = '325px';
-			document.addEventListener('keydown', moveBowl);
 
 			let score = 0;
 			let scoreElement = document.getElementById('scoreValue');
 
-			function moveBowl(e) {
-				let bowlLeft = parseInt(window.getComputedStyle(bowl).getPropertyValue('left'));
-				if (e.key == 'ArrowLeft' && bowlLeft > 0) {
-					bowl.style.left = bowlLeft - 50 + 'px';
+			let x = 325;
+
+			let izqPresionada = false;
+			let derPresionada = false;
+
+			window.addEventListener('keydown', (e) => {
+				if (e.key === 'ArrowLeft') {
+					izqPresionada = true;
+				} else if (e.key === 'ArrowRight') {
+					derPresionada = true;
 				}
-				if (e.key == 'ArrowRight' && bowlLeft < 650) {
-					bowl.style.left = bowlLeft + 50 + 'px';
+			});
+
+			window.addEventListener('keyup', (e) => {
+				if (e.key === 'ArrowLeft') {
+					izqPresionada = false;
+				} else if (e.key === 'ArrowRight') {
+					derPresionada = false;
 				}
+			});
+			
+			function bucleMov() {
+				if (izqPresionada) {
+					x -= 8;
+				}
+				if (derPresionada) {
+					x += 8;
+				}
+
+				bowl.style.left = x + 'px';
+
+				setTimeout(bucleMov, 10);
 			}
 
+			window.onload = bucleMov
+
+			let maxManzanas = 10;
+			let manzanasCreadas = 0;
+
 			function createApple() {
-				let apple = document.createElement('div');
-				apple.classList.add('apple');
-				apple.style.left = Math.floor(Math.random() * 750) + 'px';
-				apple.style.top = '-50px';
-				gameContainer.appendChild(apple);
+				if (manzanasCreadas < maxManzanas) {
+					let apple = document.createElement('div');
+					apple.classList.add('apple');
+					apple.style.left = Math.floor(Math.random() * 750) + 'px';
+					apple.style.top = '-50px';
+					gameContainer.appendChild(apple);
+
+					manzanasCreadas++;
+				}
 			}
 
 			setInterval(createApple, 1000);
@@ -75,13 +108,14 @@
 					let appleTop = parseInt(window.getComputedStyle(apple).getPropertyValue('top'));
 					if (appleTop >= 550) {
 						gameContainer.removeChild(apple);
+						manzanasCreadas--;  // Resta una al contador cuando una manzana desaparece
 					} else {
 						apple.style.top = appleTop + 15 + 'px';
 						checkCollision(apple);
 					}
 				}
 			}
-
+			
 			function checkCollision(apple) {
 				let bowlLeft = parseInt(window.getComputedStyle(bowl).getPropertyValue('left'));
 				let appleLeft = parseInt(window.getComputedStyle(apple).getPropertyValue('left'));
