@@ -1,0 +1,20 @@
+body {
+    background-color:rgb(190, 190, 201);
+}
+
+body.dark-mode {
+    background-color:rgb(34, 34, 34);
+}
+
+button {
+    padding: 4%;
+    background-color: brown;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 2em;
+    color:white;
+}
+
+button.dark-mode {
+    background-color: rgb(41, 20, 20);
+    color:white;
+}
